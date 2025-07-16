@@ -2,14 +2,30 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [fetchStatus, setFetchStatus] = useState("")
+
+  const func = async () => {
+  try {
+    const res = await fetch("https://oracle.browse.wf/invasions");
+
+    if (!res.ok) {
+      setFetchStatus(`Error: ${res.status} ${res.statusText}`);
+      return;
+    }
+
+    const data = await res.json();
+    setFetchStatus(data.activation)
+  } catch (error) {
+    setFetchStatus(`Network error: ${error.message}`);
+  }
+};
 
   return (
     <>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={func}>
+          Status: {fetchStatus}
         </button>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
